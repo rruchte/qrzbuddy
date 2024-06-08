@@ -1,0 +1,18 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/">
+        <file compress="1" compress-algo="zstd">map.qml</file>
+        <file compress="1" compress-algo="zstd">resources/callsign-list.xsl</file>
+        <file compress="1" compress-algo="zstd">resources/callsign-detail.xsl</file>
+        <file>images/print.png</file>
+        <file>images/print@2x.png</file>
+        <file>images/floppy_disk.png</file>
+        <file>images/floppy_disk@2x.png</file>
+        <file>images/zoom_in.png</file>
+        <file>images/zoom_in@2x.png</file>
+        <file>images/zoom_out.png</file>
+        <file>images/zoom_out@2x.png</file>
+        <file>images/map-marker.svg</file>
+        <file>images/map-marker-blue.svg</file>
+    </qresource>
+</RCC>
