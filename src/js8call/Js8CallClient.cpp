@@ -154,7 +154,33 @@ void Js8CallClient::socketClosed()
 
 void Js8CallClient::socketError( QAbstractSocket::SocketError e )
 {
-	QString msg = tr("Error number %1 occurred\n").arg(e);
+	QVector<QString> socketErrors = {
+			"Connection Refused",
+			"Remote Host Closed",
+			"Host Not Found",
+			"Socket Access Error",
+			"Socket Resource Error",
+			"Socket Timeout",                     /* 5 */
+			"Datagram Too Large",
+			"Network Error",
+			"Address In Use",
+			"Socket Address Not Available",
+			"Unsupported Socket Operation",       /* 10 */
+			"Unfinished Socket Operation",
+			"Proxy Authentication Required",
+			"SSL Handshake Failed",
+			"Proxy Connection Refused",
+			"Proxy Connection Closed",            /* 15 */
+			"Proxy Connection Timeout",
+			"Proxy Not Found",
+			"Proxy Protocol Error",
+			"Operation Error",
+			"SSL Internal Error",                 /* 20 */
+			"SSL Invalid User Data Error",
+			"Temporary Error"
+	};
+
+	QString msg = (e >= 0 && e < socketErrors.size()) ? socketErrors[e]:"Unknown Socket Error";
 
 	qDebug() << msg;
 

@@ -137,8 +137,7 @@ void MainWindow::onActionAboutTriggered()
 					  "user preferences, manage file histories and control cursor "
 					  "behavior when hovering over widgets.\n\n"
 					  "This version has loaded the following plugins:\n%1\n"
-					  "\n\nIt supports the following mime types:\n%2")
-			.arg("WOMBATS", "FOOBAR");
+					  "\n\nIt supports the following mime types:\n%2");
 
 	QMessageBox::about(this, tr("About Document Viewer Demo"), text);
 }

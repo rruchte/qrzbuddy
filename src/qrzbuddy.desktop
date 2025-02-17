@@ -3,6 +3,8 @@ Version=1.0
 Name=QRZBuddy
 Comment=Amateur Radio QRZ.com Client
 Exec=qrzbuddy
+# To pass configuration to exec...
+#Exec=zsh -c "QT_QPA_PLATFORMTHEME=gnome qrzbuddy"
 Icon=qrzbuddy_icon
 Terminal=false
 X-MultipleArgs=false

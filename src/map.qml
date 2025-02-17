@@ -24,7 +24,9 @@ Map {
     property double stationLongitude: 0
     property int currentMarker: -1
     property bool autoFit: true
-    property int timeoutCount: 0;
+    property int timeoutCount: 0
+
+    property var deletedMarkers: [];
 
     center: QtPositioning.coordinate(latitude, longitude) // Default to center of US
     zoomLevel: 4 // Zoom at a level where the entire US is shown in the viewport
@@ -47,8 +49,24 @@ Map {
         zoomLevel = zoom;
     }
 
+    function coorinateHasBeenDeleted(lat, lng)
+    {
+        for (var i = 0; i < deletedMarkers.length; i++) {
+            if (deletedMarkers[i].latitude === lat && deletedMarkers[i].longitude === lng) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     function addLocationMarker(lat, lng)
     {
+        if(coorinateHasBeenDeleted(lat, lng))
+        {
+            return;
+        }
+
         var item = locationMarker.createObject(mapview, {
             coordinate:QtPositioning.coordinate(lat, lng)
         });
@@ -82,6 +100,11 @@ Map {
 
     function addNamedLocationMarker(lat, lng, name)
     {
+        if(coorinateHasBeenDeleted(lat, lng))
+        {
+            return;
+        }
+
         var item = locationMarker.createObject(mapview, {
             coordinate:QtPositioning.coordinate(lat, lng),
             labelString: name
@@ -107,6 +130,11 @@ Map {
 
     function addNamedLocationMarkerWithSnr(lat, lng, name, snr, rpt, lastHeardTimestamp)
     {
+        if(coorinateHasBeenDeleted(lat, lng))
+        {
+            return;
+        }
+
         var item = locationMarker.createObject(mapview, {
             coordinate:QtPositioning.coordinate(lat, lng),
             labelString: name,
@@ -579,7 +607,11 @@ Map {
 
         MenuItem {
             text: "Delete Marker"
-            onTriggered: mapview.removeMapItem(mapview.mapItems[mapview.currentMarker])
+            onTriggered: function()
+                {
+                    deletedMarkers.push(QtPositioning.coordinate(mapview.mapItems[mapview.currentMarker].coordinate.latitude, mapview.mapItems[mapview.currentMarker].coordinate.longitude));
+                    mapview.removeMapItem(mapview.mapItems[mapview.currentMarker]);
+                }
         }
 
         function show()
