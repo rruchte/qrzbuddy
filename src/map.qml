@@ -315,6 +315,38 @@ Map {
         CoordinateAnimation { duration: 500; easing.type: Easing.OutQuad }
     }
 
+    // Define our OpenStreetMap attribution component
+    Rectangle {
+        id: osmAttribution
+        width: 200
+        height: 30
+        z: parent.z + 100
+        color: "#AAFFFFFF"
+        border.width: 1
+        border.color: "#AA000000"
+        border.pixelAligned: true
+        radius: 0
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.topMargin: 0
+        anchors.rightMargin: 0
+        anchors.bottomMargin: 0
+        anchors.leftMargin: 0
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: Qt.openUrlExternally("https://osmfoundation.org/wiki/Licence/Attribution_Guidelines")
+
+            Text {
+                anchors.centerIn: parent
+                text: "Map data from OpenStreetMap"
+                font.pixelSize: 12
+                font.underline: true
+                color: "blue"
+            }
+        }
+    }
+
     // Define our map marker component
     Component
     {
@@ -635,7 +667,7 @@ Map {
         anchors.right: parent.right
         anchors.topMargin: 0
         anchors.rightMargin: 10
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 40
         anchors.leftMargin: 0
 
         ColumnLayout
