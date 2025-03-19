@@ -335,7 +335,7 @@ Map {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: Qt.openUrlExternally("https://osmfoundation.org/wiki/Licence/Attribution_Guidelines")
+            onClicked: Qt.openUrlExternally("https://www.openstreetmap.org/copyright")
 
             Text {
                 anchors.centerIn: parent
