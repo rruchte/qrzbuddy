@@ -131,15 +131,17 @@ MainWindow::~MainWindow()
 void MainWindow::onActionAboutTriggered()
 {
 
-	QString text = tr("A Widgets application to display and print JSON, "
-					  "text and PDF files. Demonstrates various features to use "
-					  "in widget applications: Using QSettings, query and save "
-					  "user preferences, manage file histories and control cursor "
-					  "behavior when hovering over widgets.\n\n"
-					  "This version has loaded the following plugins:\n%1\n"
-					  "\n\nIt supports the following mime types:\n%2");
+	QString text = tr("A GUI client for the QRZ.com XML API with JS8Call integration."
+					  "Manually enter callsigns to search for, or connect to JS8Call "
+					  "to automatically load information for all heard callsigns.\n\n"
+					  "This application is free software and is provided \"as is\". "
+					  "The author is not responsible for any damages caused by this software.\n\n"
+					  "This application is based on the Qt framework. "
+					  "Map tiles are provided by OpenStreetMap\n\n"
+					  "73, K4RWR\n"
+					  );
 
-	QMessageBox::about(this, tr("About Document Viewer Demo"), text);
+	QMessageBox::about(this, tr("About QRZBuddy"), text);
 }
 
 
