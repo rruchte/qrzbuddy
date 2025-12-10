@@ -114,7 +114,7 @@ namespace qrz::render
 					   callsign.getFname(),
 					   callsign.getName(),
 					   callsign.getAddr1(),
-					   callsign.getAddr2(),
+					   callsign.getCity(),
 					   callsign.getState(),
 					   callsign.getZip(),
 					   callsign.getCountry(),

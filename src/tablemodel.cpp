@@ -45,7 +45,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 				case 3:
 					return {call.getAddr1().c_str()};
 				case 4:
-					return {call.getAddr2().c_str()};
+					return {call.getCity().c_str()};
 				case 5:
 					return {call.getState().c_str()};
 				case 6:

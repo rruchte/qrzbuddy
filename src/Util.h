@@ -41,6 +41,17 @@ namespace qrz
 	extern void ToUpper(std::string &input);
 
 	/**
+	 * @brief Convert a string to a double.
+	 *
+	 * This function populates a doublevalue based on string input if possible.
+	 * The boolean return value indicates whether ot not the conversion was successful.
+	 *
+	 * @param[in,out] input The string to be converted to uppercase.
+	 *
+	 */
+	bool ToDouble(const std::string& s, double& out);
+
+	/**
 	 * Convert a vector of strings to a CSV string.
 	 *
 	 * This function takes in a vector of strings and converts it into a CSV (Comma Separated Values) string. Each element in the vector is treated as a separate field, and the fields are separated by commas. If a field contains a double quote character, it is escaped by doubling it. The resulting CSV string is enclosed in double quotes.

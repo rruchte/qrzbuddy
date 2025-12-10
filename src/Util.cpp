@@ -6,6 +6,7 @@
 #endif
 
 #include <algorithm>
+#include <charconv>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -47,6 +48,26 @@ namespace qrz
 		{
 			c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
 		});
+	}
+
+	/**
+	 * @brief Convert a string to a double.
+	 *
+	 * This function populates a doublevalue based on string input if possible.
+	 * The boolean return value indicates whether ot not the conversion was successful.
+	 *
+	 * @param[in,out] input The string to be converted to uppercase.
+	 *
+	 */
+	bool ToDouble(const std::string& s, double& out)
+	{
+		if (s.empty())
+		{
+			return false;
+		}
+
+		auto result = std::from_chars(s.data(), s.data() + s.size(), out);
+		return result.ec == std::errc();
 	}
 
 	/**

@@ -294,7 +294,12 @@ void Configuration::setLat(const std::string& lat)
 	{
 		qDebug() << "Emitting lat change to " << lat;
 
-		emit coordsChanged(std::stod(lat), std::stod(getLng()));
+		double latVal;
+		double lngVal;
+		if (ToDouble(lat, latVal) && ToDouble(getLng(), lngVal))
+		{
+			emit coordsChanged(latVal, lngVal);
+		}
 	}
 }
 
@@ -315,7 +320,12 @@ void Configuration::setLng(const std::string& lng)
 	{
 		qDebug() << "Emitting lng change to " << lng;
 
-		emit coordsChanged(std::stod(getLat()), std::stod(lng));
+		double latVal;
+		double lngVal;
+		if (ToDouble(getLat(), latVal) && ToDouble(lng, lngVal))
+		{
+			emit coordsChanged(latVal, lngVal);
+		}
 	}
 }
 

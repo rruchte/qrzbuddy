@@ -53,7 +53,7 @@
                                     <xsl:value-of select="addr1"/>
                                 </td>
                                 <td>
-                                    <xsl:value-of select="addr2"/>
+                                    <xsl:value-of select="city"/>
                                 </td>
                                 <td>
                                     <xsl:value-of select="state"/>

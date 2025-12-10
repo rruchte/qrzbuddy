@@ -85,7 +85,7 @@
                             <tr>
                                 <th>City</th>
                                 <td>
-                                    <xsl:value-of select="addr2"/>
+                                    <xsl:value-of select="city"/>
                                 </td>
                             </tr>
                             <tr>

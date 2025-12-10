@@ -45,7 +45,7 @@ QVariant DetailTableModel::data(const QModelIndex &index, int role) const
 			case 4:
 				return (col==0) ? "Address":callsign.getAddr1().c_str();
 			case 5:
-				return (col==0) ? "City":callsign.getAddr2().c_str();
+				return (col==0) ? "City":callsign.getCity().c_str();
 			case 6:
 				return (col==0) ? "State":callsign.getState().c_str();
 			case 7:

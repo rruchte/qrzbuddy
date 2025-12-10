@@ -75,6 +75,11 @@ void mapwindow::setStationCoords(double lat, double lon)
 
 void mapwindow::setStationGrid(const QString &grid)
 {
+	if(grid.isEmpty())
+	{
+		return;
+	}
+
 	std::pair<double, double> coords = MaidenheadUtils::grid2Deg(grid.toStdString());
 
 	emit addStationMarker(coords.first, coords.second);

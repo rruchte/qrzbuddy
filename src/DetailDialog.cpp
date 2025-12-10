@@ -71,7 +71,7 @@ void DetailDialog::loadCallsign()
 
 	ui.address->setText(callsign.getAddr1().c_str());
 
-	QString formattedAddress2 = tr("%1, %2 %3").arg(callsign.getAddr2().c_str(),
+	QString formattedAddress2 = tr("%1, %2 %3").arg(callsign.getCity().c_str(),
 													 callsign.getState().c_str(),
 													 callsign.getZip().c_str());
 	ui.cityStateZip->setText(formattedAddress2);

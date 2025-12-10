@@ -3,3 +3,7 @@ build/
 cmake-build-debug/
 cmake-build-release/
 CMakeUserPresets.json
+/.vs
+/dist
+/out/install/x64-Debug/bin
+/CMakeSettings.json

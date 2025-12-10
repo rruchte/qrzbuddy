@@ -2,11 +2,11 @@
 # To keep your changes, remove these comment lines, but the plugin won't be able to modify your requirements
 
 requirements:
-  - "libxslt/1.1.39"
-  - "gtest/1.14.0"
-  - "openssl/3.2.1"
-  - "poco/1.13.2"
+  - "libxslt/1.1.42"
+  - "gtest/1.15.0"
+  - "openssl/3.2.3"
+  - "poco/1.13.3"
   - "indicators/2.3"
   - "tabulate/1.5"
-  - "argparse/3.0"
+  - "argparse/3.1"
   - "libconfig/1.7.3"

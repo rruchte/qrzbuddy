@@ -573,11 +573,12 @@ inline void AppController::eraseLine() {
  * It creates an instance of the BlockProgressBar class, which is a concrete implementation of the ProgressBar interface.
  *
  * @return A unique_ptr to a ProgressBar object.
- */
+
 std::unique_ptr<ProgressBar> AppController::buildProgressBar()
 {
 	return std::make_unique<DefaultProgressBar>();
 }
+ */
 #else
 /**
 * @brief Erases the current line in the console.

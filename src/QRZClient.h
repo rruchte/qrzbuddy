@@ -43,7 +43,7 @@ namespace qrz
 	 */
 	class QrzResponse
 	{
-		public:
+	public:
 		QrzResponse() = default;
 		QrzResponse(const Poco::Net::HTTPResponse &mHttpResponse,
 					const std::string &mBody) : m_httpResponse(mHttpResponse), m_body(mBody)
@@ -70,8 +70,8 @@ namespace qrz
 		}
 
 	private:
-			std::string m_body;
-			Poco::Net::HTTPResponse m_httpResponse;
+		std::string m_body;
+		Poco::Net::HTTPResponse m_httpResponse;
 	};
 
 	/**
@@ -220,6 +220,11 @@ namespace qrz
 		 */
 		void setSessionExpiration(const std::string &sessionExpiration)
 		{
+			if (sessionExpiration.empty())
+			{
+				return;
+			}
+
 			int tzd = 0;
 			Poco::DateTime dt;
 			Poco::DateTimeParser::parse(m_timeFormat, sessionExpiration, dt, tzd);
@@ -582,13 +587,13 @@ namespace qrz
 						throw AuthenticationException{errorText};
 					}
 					else if(errorText.starts_with("Not found"))
-					{
-						throw NotFoundException{errorText};
-					}
-					else
-					{
-						throw std::runtime_error{errorText};
-					}
+						{
+							throw NotFoundException{errorText};
+						}
+						else
+						{
+							throw std::runtime_error{errorText};
+						}
 				}
 			}
 			catch (Poco::Exception& ex)

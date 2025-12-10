@@ -6,7 +6,17 @@ set(CMAKE_AUTOUIC ON)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(qrzbuddy main.cpp
+if (WIN32)
+    set(APP_GUI_FLAG WIN32)
+elseif(APPLE)
+    set(APP_GUI_FLAG MACOSX_BUNDLE)
+else()
+    set(APP_GUI_FLAG "")
+endif()
+
+add_executable(qrzbuddy
+        ${APP_GUI_FLAG}
+        main.cpp
         Action.h
         AppCommand.cpp
         AppCommand.h
@@ -132,3 +142,15 @@ if (NOT WIN32 AND NOT APPLE)
         )
     endif()
 endif (NOT WIN32 AND NOT APPLE)
+
+if (WIN32)
+    set(QT_BIN_DIR "C:/Qt/6.8.3/msvc2022_64/bin")
+
+    add_custom_command(TARGET qrzbuddy POST_BUILD
+            COMMAND "${QT_BIN_DIR}/windeployqt.exe"
+            --release
+            --qmldir "${CMAKE_SOURCE_DIR}/src"
+            "$<TARGET_FILE:qrzbuddy>"
+            COMMENT "Running windeployqt for qrzbuddy"
+    )
+endif()
