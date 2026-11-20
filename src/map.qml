@@ -98,7 +98,7 @@ Map {
         setCenterPosition(lat, lng);
     }
 
-    function addNamedLocationMarker(lat, lng, name)
+    function addNamedLocationMarker(lat, lng, name, hasDetails)
     {
         if(coorinateHasBeenDeleted(lat, lng))
         {
@@ -107,7 +107,8 @@ Map {
 
         var item = locationMarker.createObject(mapview, {
             coordinate:QtPositioning.coordinate(lat, lng),
-            labelString: name
+            labelString: name,
+            hasDetails: hasDetails
         });
 
         var exists = false;
@@ -128,7 +129,7 @@ Map {
         }
     }
 
-    function addNamedLocationMarkerWithSnr(lat, lng, name, snr, rpt, lastHeardTimestamp)
+    function addNamedLocationMarkerWithSnr(lat, lng, name, snr, rpt, lastHeardTimestamp, hasDetails)
     {
         if(coorinateHasBeenDeleted(lat, lng))
         {
@@ -140,7 +141,8 @@ Map {
             labelString: name,
             snrValue: snr,
             rptValue: rpt,
-            lastHeard: lastHeardTimestamp
+            lastHeard: lastHeardTimestamp,
+            hasDetails: hasDetails
         });
 
         var exists = false;
@@ -214,6 +216,11 @@ Map {
     function showMarkerMenu()
     {
         markerPopupMenu.show();
+    }
+
+    function showLightMarkerMenu()
+    {
+        markerPopupMenuLight.show();
     }
 
     function disableCenterAnimation()
@@ -363,6 +370,7 @@ Map {
             property color negative: "#9b0000"
             property int origZ: 0
             property string type: "remote"
+            property bool hasDetails: false
             id: locationMarkerItem
             anchorPoint.x: image.width / 2
             anchorPoint.y: image.height
@@ -577,7 +585,14 @@ Map {
                              */
                             if(locationMarkerItem.labelString.length > 0)
                             {
-                                markerPopupMenu.show();
+                                if(locationMarkerItem.hasDetails)
+                                {
+                                    markerPopupMenu.show();
+                                }
+                                else
+                                {
+                                    markerPopupMenuLight.show();
+                                }
                             }
 
                             break
@@ -650,6 +665,27 @@ Map {
         {
             markerPopupMenu.markersCount = mapview.mapItems.length
             markerPopupMenu.popup()
+        }
+    }
+
+    Menu {
+        id: markerPopupMenuLight
+        property int currentMarker
+        property int markersCount
+
+        MenuItem {
+            text: "Delete Marker"
+            onTriggered: function()
+                {
+                    deletedMarkers.push(QtPositioning.coordinate(mapview.mapItems[mapview.currentMarker].coordinate.latitude, mapview.mapItems[mapview.currentMarker].coordinate.longitude));
+                    mapview.removeMapItem(mapview.mapItems[mapview.currentMarker]);
+                }
+        }
+
+        function show()
+        {
+            markerPopupMenuLight.markersCount = mapview.mapItems.length
+            markerPopupMenuLight.popup()
         }
     }
 

@@ -49,7 +49,7 @@ DetailDialog::DetailDialog(QWidget *parent) : QMainWindow(parent)
 
 	QQuickItem *mapObj = ui.map->rootObject();
 	connect(this, SIGNAL(setCenterPosition(QVariant,QVariant)), mapObj, SLOT(setCenterPosition(QVariant,QVariant)));
-	connect(this, SIGNAL(addNamedLocationMarker(QVariant,QVariant,QVariant)), mapObj, SLOT(addNamedLocationMarker(QVariant,QVariant,QVariant)));
+	connect(this, SIGNAL(addNamedLocationMarker(QVariant,QVariant,QVariant,QVariant)), mapObj, SLOT(addNamedLocationMarker(QVariant,QVariant,QVariant,QVariant)));
 	connect(this, SIGNAL(addLocationMarker(QVariant,QVariant)), mapObj, SLOT(addLocationMarker(QVariant,QVariant)));
 	connect(this, SIGNAL(setZoom(QVariant)), mapObj, SLOT(setZoom(QVariant)));
 	connect(this, SIGNAL(disableCenterAnimation()), mapObj, SLOT(disableCenterAnimation()));
@@ -72,8 +72,8 @@ void DetailDialog::loadCallsign()
 	ui.address->setText(callsign.getAddr1().c_str());
 
 	QString formattedAddress2 = tr("%1, %2 %3").arg(callsign.getCity().c_str(),
-													 callsign.getState().c_str(),
-													 callsign.getZip().c_str());
+							 callsign.getState().c_str(),
+							 callsign.getZip().c_str());
 	ui.cityStateZip->setText(formattedAddress2);
 
 	ui.country->setText(callsign.getCountry().c_str());

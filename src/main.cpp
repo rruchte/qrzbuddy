@@ -2,9 +2,24 @@
 #include <QPushButton>
 #include <QCommandLineParser>
 
+#include <openssl/provider.h>
+#include <openssl/err.h>
+
+#include <stdexcept>
+
 #include "mainwindow.h"
 
 //using namespace qrz;
+
+void initializeOpenSSL()
+{
+	if (!OSSL_PROVIDER_load(nullptr, "default"))
+	{
+		throw std::runtime_error(
+			"Failed to initialize OpenSSL default provider"
+		);
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +27,8 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("K4RWR");
 	QCoreApplication::setApplicationName("QRZBuddy");
 	QCoreApplication::setApplicationVersion("1.0");
+
+	initializeOpenSSL();
 
 	MainWindow w;
 	w.show();

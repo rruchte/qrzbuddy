@@ -44,7 +44,16 @@ CallsignTableView::CallsignTableView(QWidget *parent) : QTableView(parent)
 	{
 		QMenu *menu = new QMenu(this);
 
-		menu->addAction(showDetailForSelection);
+		// Do not include the show detail item for rows with no name,
+		// this indicates that they are an entry from JS8Call that
+		// was not recognized by QRZ, so we don't have details.
+		int floor = selectedIndexes().at(0).row();
+		QString name = model()->index(floor, 1).data().toString();
+		if (!name.isEmpty())
+		{
+			menu->addAction(showDetailForSelection);
+		}
+
 		menu->addAction(copyRows);
 		menu->addAction(copySelected);
 		menu->addSeparator();

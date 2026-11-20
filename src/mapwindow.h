@@ -22,7 +22,7 @@ public slots:
 	void setStationGrid(const QString &grid);
 	void setStationCoords(double, double);
 signals:
-	void addNamedLocationMarkerWithSnr(QVariant, QVariant, QVariant, QVariant, QVariant, QVariant);
+	void addNamedLocationMarkerWithSnr(QVariant, QVariant, QVariant, QVariant, QVariant, QVariant, QVariant);
 	void addLocationMarker(QVariant, QVariant);
 	void addStationMarker(QVariant, QVariant);
 	void setCenterPosition(QVariant, QVariant);

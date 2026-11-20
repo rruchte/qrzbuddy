@@ -1316,6 +1316,30 @@ namespace qrz
 			m_lastHeard = lastHeard;
 		}
 
+		/**
+		* @brief Retrieves the QRZ init flag
+		*
+		* @return A boolean indicating whether the callsign
+		* has been populated from QRZ. Callsigns received from the
+		* JS8Call API but not found in QRZ will return false
+		*/
+		bool getQrzInit() const
+		{
+			return m_qrzInit;
+		}
+
+		/**
+		 * @brief Sets the value of m_lastHeard.
+		 *
+		 * This function is used to set the value of m_lastHeard variable.
+		 *
+		 * @param mLastHeard The new value to set for m_lastHeard.
+		 */
+		void setQrzInit(bool qrzInit)
+		{
+			m_qrzInit = qrzInit;
+		}
+
 	private:
 		// Callsign
 		std::string m_call;
@@ -1478,6 +1502,8 @@ namespace qrz
 
 		// The "last heard" time based upon JS8Call message data
 		std::string m_lastHeard;
+
+		bool m_qrzInit = false;
 	};
 }
 #endif //QRZ_CALLSIGN_H

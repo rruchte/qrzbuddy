@@ -26,7 +26,7 @@ mapwindow::mapwindow(QWidget *parent) : QMainWindow(parent)
 
 	// Get a pointer to the map QQuickItem so we can wire up our connections
 	QQuickItem *mapObj = ui.map->rootObject();
-	connect(this, SIGNAL(addNamedLocationMarkerWithSnr(QVariant,QVariant,QVariant,QVariant,QVariant,QVariant)), mapObj, SLOT(addNamedLocationMarkerWithSnr(QVariant,QVariant,QVariant,QVariant,QVariant,QVariant)));
+	connect(this, SIGNAL(addNamedLocationMarkerWithSnr(QVariant,QVariant,QVariant,QVariant,QVariant,QVariant,QVariant)), mapObj, SLOT(addNamedLocationMarkerWithSnr(QVariant,QVariant,QVariant,QVariant,QVariant,QVariant,QVariant)));
 	connect(this, SIGNAL(addLocationMarker(QVariant,QVariant)), mapObj, SLOT(addLocationMarker(QVariant,QVariant)));
 	connect(this, SIGNAL(addStationMarker(QVariant,QVariant)), mapObj, SLOT(addStationMarker(QVariant,QVariant)));
 	connect(this, SIGNAL(removeLocationMarker(QVariant,QVariant)), mapObj, SLOT(removeLocationMarker(QVariant,QVariant)));
@@ -43,7 +43,7 @@ void mapwindow::addCallsign(const Callsign &callsign)
 {
 	if(!callsign.getLat().empty() && !callsign.getLon().empty())
 	{
-		emit addNamedLocationMarkerWithSnr(std::stof(callsign.getLat()), std::stof(callsign.getLon()), callsign.getCall().c_str(), callsign.getSnr(), callsign.getReportedSnr(), callsign.getLastHeard().c_str());
+		emit addNamedLocationMarkerWithSnr(std::stof(callsign.getLat()), std::stof(callsign.getLon()), callsign.getCall().c_str(), callsign.getSnr(), callsign.getReportedSnr(), callsign.getLastHeard().c_str(), callsign.getQrzInit());
 		emit zoomToFitItems();
 	}
 }

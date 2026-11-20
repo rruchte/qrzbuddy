@@ -311,6 +311,7 @@ namespace qrz
 
 					CallsignMarshaler marshaler;
 					callsign = marshaler.FromXml(response.getBody());
+					callsign.setQrzInit(true);
 				}
 				else
 				{

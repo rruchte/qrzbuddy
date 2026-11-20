@@ -5,7 +5,7 @@ requirements:
   - "libxslt/1.1.42"
   - "gtest/1.15.0"
   - "openssl/3.2.3"
-  - "poco/1.13.3"
+  - "poco/1.15.2"
   - "indicators/2.3"
   - "tabulate/1.5"
   - "argparse/3.1"

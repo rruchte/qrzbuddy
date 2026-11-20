@@ -71,7 +71,14 @@ void TableModel::addCallsign(const Callsign &callsign)
 {
 	if(callIndex.contains(callsign.getCall()))
 	{
-		return;
+		auto it = std::find_if(callsigns.begin(), callsigns.end(),
+		    [callsign](const Callsign& obj) {
+			return obj.getCall() == callsign.getCall();
+		    });
+
+		if (it != callsigns.end()) {
+			*it = callsign;
+		}
 	}
 
 	emit layoutAboutToBeChanged();
@@ -92,11 +99,20 @@ void TableModel::addCallsigns(const std::vector<Callsign> &calls)
 	{
 		if(callIndex.contains(currCall.getCall()))
 		{
-			return;
-		}
+			auto it = std::find_if(callsigns.begin(), callsigns.end(),
+			    [currCall](const Callsign& obj) {
+				return obj.getCall() == currCall.getCall();
+			    });
 
-		callsigns.push_back(currCall);
-		callIndex.insert(currCall.getCall());
+			if (it != callsigns.end()) {
+				*it = currCall;
+			}
+		}
+		else
+		{
+			callsigns.push_back(currCall);
+			callIndex.insert(currCall.getCall());
+		}
 
 		emit callsignAdded(currCall);
 	}
@@ -171,7 +187,5 @@ Callsign *TableModel::getCallsignPtr(std::string call)
 		}
 	}
 
-	std::string msg = std::format("Callsign {:s} not found", call);
-
-	throw std::runtime_error{msg};
+	return nullptr;
 }

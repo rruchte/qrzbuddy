@@ -29,7 +29,7 @@ private slots:
 	void onPrintActionTriggered();
 	void onSavePdfActionTriggered();
 signals:
-	void addNamedLocationMarker(QVariant, QVariant, QVariant);
+	void addNamedLocationMarker(QVariant, QVariant, QVariant, QVariant);
 	void addLocationMarker(QVariant, QVariant);
 	void setCenterPosition(QVariant, QVariant);
 	void setZoom(QVariant);

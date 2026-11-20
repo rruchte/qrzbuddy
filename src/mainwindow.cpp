@@ -227,6 +227,11 @@ void MainWindow::showCallsignDetail(const QString &call)
 	{
 		Callsign callsign = tableModel.getCallsign(call.toStdString());
 
+		if (callsign.getNameFmt().empty())
+		{
+			return;
+		}
+
 		detailDialog->setCallsign(callsign);
 		detailDialog->show();
 
@@ -370,8 +375,26 @@ void MainWindow::onJs8CallMessageReceived(QString msg)
 				//Normalize compound callsigns like K4RWR/P
 				auto fromParts = from.split("/");
 
+				auto call = fromParts.at(0).toStdString();
+
 				std::set<std::basic_string<char>> terms;
-				terms.insert(fromParts.at(0).toStdString());
+				terms.insert(call);
+
+				const auto fromStd = from.toStdString();
+
+				const auto getOrCreateCallsign = [&]() -> Callsign* {
+					if (auto* existing = tableModel.getCallsignPtr(fromStd); existing != nullptr)
+						return existing;
+
+					auto* created = new Callsign();
+					created->setCall(call);
+
+					tableModel.addCallsign(*created);
+
+					return created;
+				};
+
+				Callsign* callsign = getOrCreateCallsign();
 
 				AppCommand cmd;
 				cmd.setSearchTerms(terms);
@@ -384,13 +407,6 @@ void MainWindow::onJs8CallMessageReceived(QString msg)
 
 				try
 				{
-					Callsign *callsign = tableModel.getCallsignPtr(from.toStdString());
-
-					if (callsign == nullptr)
-					{
-						return;
-					}
-
 					QDateTime now = QDateTime::currentDateTime();
 					QString datestamp = now.toString("yyyy-MM-dd hh:mm");
 
@@ -408,7 +424,7 @@ void MainWindow::onJs8CallMessageReceived(QString msg)
 					{
 						QString cmd = params.value("CMD").toString();
 
-						if (cmd.contains("SNR") && cmd.contains("SNR") && params.contains("EXTRA"))
+						if (cmd.contains("SNR") && params.contains("EXTRA"))
 						{
 							QString recipCall = params.value("TO").toString();
 							int reportedSNR = params.value("EXTRA").toString().toInt();
@@ -422,6 +438,18 @@ void MainWindow::onJs8CallMessageReceived(QString msg)
 
 								callsign->setReportedSnr(reportedSNR);
 							}
+						}
+					}
+
+					if (params.contains("GRID") && callsign->getGrid().empty())
+					{
+						callsign->setGrid(params.value("GRID").toString().toStdString());
+
+						if (!config.hasLat() && !config.hasLng())
+						{
+							std::pair<double, double> coords = MaidenheadUtils::grid2Deg(config.getGrid());
+							callsign->setLat(std::to_string(coords.first));
+							callsign->setLon(std::to_string(coords.second));
 						}
 					}
 
