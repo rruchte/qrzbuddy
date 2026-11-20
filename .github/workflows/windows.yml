@@ -64,8 +64,19 @@ jobs:
           path: qrzbuddy-windows.zip
           if-no-files-found: error
 
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: windows
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Windows package
+        uses: actions/download-artifact@v4
+        with:
+          name: qrzbuddy-windows-x64
+
       - name: Publish tagged release
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: qrzbuddy-windows.zip
