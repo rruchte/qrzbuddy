@@ -11,3 +11,4 @@ X-MultipleArgs=false
 Type=Application
 Categories=HamRadio;
 StartupNotify=true
+StartupWMClass=qrzbuddy
