@@ -1,0 +1,88 @@
+name: Linux AppImage build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install system build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build build-essential pkg-config perl             libgl1-mesa-dev libxkbcommon-x11-0 libxcb-cursor0             libxcb-xinerama0 libxcb-randr0 libxcb-icccm4 libxcb-keysyms1             libxcb-image0 libxcb-render-util0 libnss3 libdbus-1-3             libfontconfig1 libfuse2t64
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: linux
+          target: desktop
+          arch: linux_gcc_64
+          modules: 'qtwebengine qtlocation qtpositioning qtwebchannel'
+          cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Conan and CMake 3
+        run: |
+          python -m pip install "conan>=2,<3" "cmake>=3.29,<4"
+          conan profile detect --force
+          CMAKE_BIN="$(python -c 'import cmake, os; print(os.path.join(cmake.CMAKE_BIN_DIR, "cmake"))')"
+          "$CMAKE_BIN" --version
+          echo "tools.cmake:cmake_program=$CMAKE_BIN" >> "$(conan config home)/global.conf"
+          echo "$(dirname "$CMAKE_BIN")" >> "$GITHUB_PATH"
+
+      - name: Configure
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="$GITHUB_WORKSPACE/conan_provider.cmake"
+
+      - name: Build
+        run: cmake --build build --parallel 2
+
+      - name: Download AppImage deployment tools
+        run: |
+          mkdir -p tools dist
+          curl -fL --retry 3 -o tools/linuxdeploy-x86_64.AppImage \
+            https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          curl -fL --retry 3 -o tools/linuxdeploy-plugin-qt-x86_64.AppImage \
+            https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x tools/*.AppImage
+
+      - name: Package Qt application as AppImage
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+          QML_SOURCES_PATHS: ${{ github.workspace }}/src
+          QMAKE: ${{ env.QT_ROOT_DIR }}/bin/qmake
+          OUTPUT: ${{ github.workspace }}/dist/qrzbuddy-linux-x64.AppImage
+        run: |
+          ./tools/linuxdeploy-x86_64.AppImage \
+            --appdir AppDir \
+            --executable build/src/qrzbuddy \
+            --desktop-file src/qrzbuddy.desktop \
+            --icon-file src/icons/Unix/qrzbuddy_icon.png \
+            --plugin qt \
+            --output appimage
+          test -s dist/qrzbuddy-linux-x64.AppImage
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qrzbuddy-linux-x64
+          path: dist/qrzbuddy-linux-x64.AppImage
+          if-no-files-found: error
