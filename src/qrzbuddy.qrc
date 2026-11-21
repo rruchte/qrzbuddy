@@ -4,6 +4,7 @@
         <file compress="1" compress-algo="zstd">map.qml</file>
         <file compress="1" compress-algo="zstd">resources/callsign-list.xsl</file>
         <file compress="1" compress-algo="zstd">resources/callsign-detail.xsl</file>
+        <file>icons/Unix/qrzbuddy_icon.png</file>
         <file>images/print.png</file>
         <file>images/print@2x.png</file>
         <file>images/floppy_disk.png</file>
