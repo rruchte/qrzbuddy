@@ -36,14 +36,20 @@ bool AppController::preflight()
 	client.setSessionKey(config->getSessionKey());
 	client.setSessionExpiration(config->getSessionExpiration());
 
-	if (!config->hasSessionKey() || !config->hasSessionExpiration() || !client.tokenIsValid())
-	{
-		refreshToken();
-	}
-	else if (userCall.empty() || password.empty())
+	if (userCall.empty() || password.empty())
 	{
 		emit credentialsNeeded();
-		return false;
+		// The dialog may have been cancelled or dismissed without credentials.
+		if (config->getUsername().empty() || config->getPassword().empty())
+		{
+			return false;
+		}
+		client.setUsername(config->getUsername());
+	}
+
+	if (!config->hasSessionKey() || !config->hasSessionExpiration() || !client.tokenIsValid())
+	{
+		return refreshToken();
 	}
 
 	return true;

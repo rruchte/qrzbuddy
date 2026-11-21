@@ -1,0 +1,75 @@
+name: macOS build
+
+on:
+  push:
+    branches: [main, ci/macos-build]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-15-intel
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: mac
+          target: desktop
+          arch: clang_64
+          modules: 'qtwebengine qtlocation qtpositioning qtwebchannel'
+          cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Conan
+        run: |
+          python3 -m pip install "conan>=2,<3" "cmake>=3.29,<4"
+          conan --version
+          conan profile detect --force
+          # Older dependencies such as libconfig/1.7.3 fail under CMake 4.
+          # Force Conan's own package builds to use the same CMake 3 executable.
+          CMAKE_BIN="$(python3 -c 'import cmake, os; print(os.path.join(cmake.CMAKE_BIN_DIR, "cmake"))')"
+          "$CMAKE_BIN" --version
+          echo "tools.cmake:cmake_program=$CMAKE_BIN" >> "$(conan config home)/global.conf"
+          echo "$(dirname "$CMAKE_BIN")" >> "$GITHUB_PATH"
+
+      - name: Configure
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES=x86_64 \
+            -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="$GITHUB_WORKSPACE/conan_provider.cmake"
+
+      - name: Build
+        run: cmake --build build --parallel 2
+
+      - name: Deploy Qt and QML dependencies
+        run: |
+          macdeployqt build/src/qrzbuddy.app -qmldir=src -verbose=1
+          test -x build/src/qrzbuddy.app/Contents/MacOS/qrzbuddy
+          test -d build/src/qrzbuddy.app/Contents/Frameworks
+          test -d build/src/qrzbuddy.app/Contents/PlugIns
+
+      - name: Create DMG
+        run: |
+          mkdir -p dist
+          hdiutil create -volname "QRZBuddy" -srcfolder build/src/qrzbuddy.app \
+            -ov -format UDZO dist/qrzbuddy-macos-x64.dmg
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qrzbuddy-macos-x64
+          path: dist/qrzbuddy-macos-x64.dmg
+          if-no-files-found: error
