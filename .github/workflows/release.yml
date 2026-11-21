@@ -1,0 +1,54 @@
+name: Publish multiplatform release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    uses: ./.github/workflows/windows.yml
+
+  macos:
+    uses: ./.github/workflows/macos.yml
+
+  linux:
+    uses: ./.github/workflows/linux.yml
+
+  publish:
+    name: Publish GitHub Release
+    runs-on: ubuntu-24.04
+    needs: [windows, macos, linux]
+    permissions:
+      contents: write
+    steps:
+      - name: Download platform artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: qrzbuddy-*
+          path: release
+          merge-multiple: true
+
+      - name: Validate packages and generate checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s release/qrzbuddy-windows.zip
+          test -s release/qrzbuddy-macos-x64.dmg
+          test -s release/qrzbuddy-linux-x64.AppImage
+          cd release
+          sha256sum qrzbuddy-windows.zip qrzbuddy-macos-x64.dmg qrzbuddy-linux-x64.AppImage > SHA256SUMS
+
+      - name: Publish release with all three platforms
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/qrzbuddy-windows.zip
+            release/qrzbuddy-macos-x64.dmg
+            release/qrzbuddy-linux-x64.AppImage
+            release/SHA256SUMS
+          fail_on_unmatched_files: true
+          generate_release_notes: true
