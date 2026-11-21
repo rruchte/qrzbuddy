@@ -25,6 +25,10 @@
 |![JS8Call Settings](/src/images/screenshots/settings_js8call.png?raw=true "JS8Call Settings")|
 
 
+### Downloads and releases
+
+Tagged releases provide a Windows x64 ZIP, Intel macOS DMG, and Linux x64 AppImage from the [GitHub Releases page](https://github.com/rruchte/qrzbuddy/releases). See [release instructions](docs/releasing.md) for the automated publishing process and current platform limitations.
+
 ### Notes
 * An active qrz.com XML subscription is required. You will be prompted to enter your callsign and qrz.com password.
 * Your password will be AES-256 encrypted and stored in a config file in your home directory.
