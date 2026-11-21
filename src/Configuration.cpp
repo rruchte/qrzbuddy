@@ -1,6 +1,7 @@
 #include "Configuration.h"
 
 #include <iostream>
+#include <stdexcept>
 
 #include <Poco/Crypto/CipherFactory.h>
 #include <Poco/Crypto/CipherKey.h>
@@ -60,15 +61,15 @@ std::string Configuration::getUsername()
 */
 std::string Configuration::getPassword()
 {
-	if(hasPassword())
+	if(hasPassword() && !getUsername().empty())
 	{
 		try
 		{
 			return decryptPassword(getValue(f_password).toString().toStdString());
 		}
-		catch (Poco::IOException &e)
+		catch (const std::exception &e)
 		{
-			std::cout << e.message() << std::endl;
+			std::cerr << "Unable to decrypt saved QRZ credentials: " << e.what() << std::endl;
 		}
 	}
 
@@ -598,9 +599,17 @@ Poco::Crypto::Cipher::Ptr Configuration::createCipher()
  */
 std::string Configuration::createCryptoPassKey()
 {
-	std::string passkey = getUsername();
-	while(passkey.size() < 64) {
-		passkey.append(getUsername());
+	const std::string username = getUsername();
+	if (username.empty())
+	{
+		throw std::invalid_argument("Cannot derive encryption key without a username");
+	}
+
+	std::string passkey;
+	passkey.reserve(64);
+	while (passkey.size() < 64)
+	{
+		passkey.append(username);
 	}
 	return passkey.substr(0, 64);
 }
