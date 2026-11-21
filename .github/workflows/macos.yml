@@ -34,12 +34,15 @@ jobs:
 
       - name: Install Conan
         run: |
-          python3 -m pip install "conan>=2,<3"
+          python3 -m pip install "conan>=2,<3" "cmake>=3.29,<4"
           conan --version
           conan profile detect --force
-          # Some legacy Conan recipes declare a pre-3.5 CMake minimum.
-          # Apply this compatibility floor to dependency builds as well.
-          echo 'tools.cmake.cmaketoolchain:extra_variables={"CMAKE_POLICY_VERSION_MINIMUM":"3.5"}' >> "$(conan config home)/global.conf"
+          # Older dependencies such as libconfig/1.7.3 fail under CMake 4.
+          # Force Conan's own package builds to use the same CMake 3 executable.
+          CMAKE_BIN="$(python3 -c 'import cmake, os; print(os.path.join(cmake.CMAKE_BIN_DIR, "cmake"))')"
+          "$CMAKE_BIN" --version
+          echo "tools.cmake:cmake_program=$CMAKE_BIN" >> "$(conan config home)/global.conf"
+          echo "$(dirname "$CMAKE_BIN")" >> "$GITHUB_PATH"
 
       - name: Configure
         run: |
