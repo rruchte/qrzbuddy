@@ -3,8 +3,8 @@ name: Windows build
 on:
   push:
     branches: [main]
-    tags: ['v*']
   pull_request:
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -40,6 +40,14 @@ jobs:
           python -m pip install "conan>=2,<3"
           conan profile detect --force
 
+      - name: Restore Conan package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2/p
+          key: conan-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('conanfile.py', 'conandata.yml') }}
+          restore-keys: |
+            conan-v1-${{ runner.os }}-${{ runner.arch }}-
+
       - name: Configure
         shell: pwsh
         run: |
@@ -70,20 +78,3 @@ jobs:
           path: qrzbuddy-windows.zip
           if-no-files-found: error
 
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: windows
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Download Windows package
-        uses: actions/download-artifact@v4
-        with:
-          name: qrzbuddy-windows-x64
-
-      - name: Publish tagged release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: qrzbuddy-windows.zip
-          generate_release_notes: true
