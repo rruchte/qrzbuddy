@@ -37,6 +37,9 @@ jobs:
           python3 -m pip install "conan>=2,<3"
           conan --version
           conan profile detect --force
+          # Some legacy Conan recipes declare a pre-3.5 CMake minimum.
+          # Apply this compatibility floor to dependency builds as well.
+          echo 'tools.cmake.cmaketoolchain:extra_variables={"CMAKE_POLICY_VERSION_MINIMUM":"3.5"}' >> "$(conan config home)/global.conf"
 
       - name: Configure
         run: |
