@@ -78,8 +78,23 @@ jobs:
           APPIMAGE_EXTRACT_AND_RUN: '1'
           QML_SOURCES_PATHS: ${{ github.workspace }}/src
           QMAKE: ${{ env.QT_ROOT_DIR }}/bin/qmake
+          EXTRA_QT_MODULES: location
           OUTPUT: ${{ github.workspace }}/dist/qrzbuddy-linux-x64.AppImage
         run: |
+          # NSS uses dlopen() for its soft-token modules, so linuxdeploy's
+          # ELF dependency scanner cannot discover them automatically.
+          # Bundle these modules from the same OS release as libnss3/libnssutil3
+          # to avoid loading incompatible host versions on rolling distros.
+          mkdir -p AppDir/usr/lib
+          for module in libsoftokn3.so libfreebl3.so libfreeblpriv3.so libnssckbi.so; do
+            source_path="/usr/lib/x86_64-linux-gnu/$module"
+            if [[ -f "$source_path" ]]; then
+              cp -L "$source_path" "AppDir/usr/lib/$module"
+            elif [[ "$module" == "libsoftokn3.so" || "$module" == "libfreeblpriv3.so" ]]; then
+              echo "::error::Required NSS module missing: $source_path"
+              exit 1
+            fi
+          done
           ./tools/linuxdeploy-x86_64.AppImage \
             --appdir AppDir \
             --executable build/src/qrzbuddy \
@@ -87,6 +102,9 @@ jobs:
             --icon-file dist/qrzbuddy_icon.png \
             --plugin qt \
             --output appimage
+          # The mapping widget needs geoservices plugins as well as QtLocation QML.
+          test -n "$(find AppDir/usr/plugins/geoservices -maxdepth 1 -name '*.so' -print -quit)"
+          test -s AppDir/usr/lib/libsoftokn3.so
           test -s dist/qrzbuddy-linux-x64.AppImage
 
       - name: Upload AppImage artifact
