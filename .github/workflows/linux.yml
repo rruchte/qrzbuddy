@@ -64,6 +64,15 @@ jobs:
             https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x tools/*.AppImage
 
+      - name: Prepare AppImage icon
+        run: |
+          python -m pip install pillow
+          python - <<'PY'
+          from PIL import Image
+          with Image.open("src/icons/Unix/qrzbuddy_icon.png") as icon:
+              icon.convert("RGBA").resize((512, 512), Image.Resampling.LANCZOS).save("dist/qrzbuddy_icon.png")
+          PY
+
       - name: Package Qt application as AppImage
         env:
           APPIMAGE_EXTRACT_AND_RUN: '1'
@@ -75,7 +84,7 @@ jobs:
             --appdir AppDir \
             --executable build/src/qrzbuddy \
             --desktop-file src/qrzbuddy.desktop \
-            --icon-file src/icons/Unix/qrzbuddy_icon.png \
+            --icon-file dist/qrzbuddy_icon.png \
             --plugin qt \
             --output appimage
           test -s dist/qrzbuddy-linux-x64.AppImage
