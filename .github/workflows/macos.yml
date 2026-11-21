@@ -27,6 +27,11 @@ jobs:
           modules: 'qtwebengine qtlocation qtpositioning qtwebchannel'
           cache: true
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install Conan
         run: |
           python3 -m pip install "conan>=2,<3"
