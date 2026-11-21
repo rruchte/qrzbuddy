@@ -1,0 +1,89 @@
+name: Windows build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: 'qtwebengine qtlocation qtpositioning qtwebchannel'
+          cache: true
+
+      - name: Activate MSVC build environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Conan
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "conan>=2,<3"
+          conan profile detect --force
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          cmake -S . -B build -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="$env:GITHUB_WORKSPACE/conan_provider.cmake"
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --parallel 2
+
+      - name: Deploy Qt runtime and QML plugins
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force package | Out-Null
+          Copy-Item build/src/qrzbuddy.exe package/
+          windeployqt --release --qmldir "$env:GITHUB_WORKSPACE/src" package/qrzbuddy.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Create portable ZIP
+        shell: pwsh
+        run: Compress-Archive -Path package/* -DestinationPath qrzbuddy-windows.zip -Force
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qrzbuddy-windows-x64
+          path: qrzbuddy-windows.zip
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: windows
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Windows package
+        uses: actions/download-artifact@v4
+        with:
+          name: qrzbuddy-windows-x64
+
+      - name: Publish tagged release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: qrzbuddy-windows.zip
+          generate_release_notes: true

@@ -1,5 +1,3 @@
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -143,14 +141,6 @@ if (NOT WIN32 AND NOT APPLE)
     endif()
 endif (NOT WIN32 AND NOT APPLE)
 
-if (WIN32)
-    set(QT_BIN_DIR "C:/Qt/6.8.3/msvc2022_64/bin")
-
-    add_custom_command(TARGET qrzbuddy POST_BUILD
-            COMMAND "${QT_BIN_DIR}/windeployqt.exe"
-            --release
-            --qmldir "${CMAKE_SOURCE_DIR}/src"
-            "$<TARGET_FILE:qrzbuddy>"
-            COMMENT "Running windeployqt for qrzbuddy"
-    )
-endif()
+# Platform deployment (windeployqt/macdeployqt/Linux packaging) is handled
+# separately from the compilation step, so the Qt installation can be
+# discovered from the CI runner rather than a hard-coded developer path.
