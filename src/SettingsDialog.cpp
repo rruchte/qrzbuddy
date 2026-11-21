@@ -54,7 +54,6 @@ void SettingsDialog::loadSettings()
 void SettingsDialog::accept()
 {
 	qDebug() << ui.usernameLineEdit->text();
-	qDebug() << ui.passwordLineEdit->text();
 	qDebug() << ui.callsignLineEdit->text();
 	qDebug() << ui.gridLineEdit->text();
 	qDebug() << ui.latitudeLineEdit->text();

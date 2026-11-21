@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <charconv>
+#include <locale>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -66,8 +67,25 @@ namespace qrz
 			return false;
 		}
 
+#ifdef __APPLE__
+		// Apple libc++ does not provide floating-point std::from_chars
+		// on all supported SDK/toolchain combinations.
+		std::istringstream stream(s);
+		stream.imbue(std::locale::classic());
+		stream >> std::noskipws;
+
+		double parsed;
+		if (!(stream >> parsed) || !stream.eof())
+		{
+			return false;
+		}
+
+		out = parsed;
+		return true;
+#else
 		auto result = std::from_chars(s.data(), s.data() + s.size(), out);
 		return result.ec == std::errc();
+#endif
 	}
 
 	/**

@@ -77,9 +77,6 @@ add_executable(qrzbuddy
         js8call/DriftingDateTime.cpp
 )
 
-install(TARGETS qrzbuddy)
-
-
 find_package(Qt6 REQUIRED COMPONENTS
         Core
         Gui

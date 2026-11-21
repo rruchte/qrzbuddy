@@ -15,9 +15,6 @@ void LoginDialog::loadSettings()
 
 void LoginDialog::accept()
 {
-	qDebug() << ui.usernameLineEdit->text();
-	qDebug() << ui.passwordLineEdit->text();
-
 	config->setUsername(ui.usernameLineEdit->text().toStdString());
 	config->setPassword(ui.passwordLineEdit->text().toStdString());
 
