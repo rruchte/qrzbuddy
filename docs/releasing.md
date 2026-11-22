@@ -9,11 +9,11 @@ After the release changes have been merged into `main` and verified, choose a ne
 ```bash
 git switch main
 git pull --ff-only
-git tag -a v1.0.0 -m "QRZBuddy v1.0.0"
-git push origin v1.0.0
+git tag -a v1.1.0 -m "QRZBuddy v1.1.0"
+git push origin v1.1.0
 ```
 
-Use the actual release version instead of `v1.0.0` (and do not reuse an existing tag). Pushing a `v*` tag runs the coordinated release workflow. It builds Windows, macOS Intel, and Linux x64, waits for all three, checks that the packages exist, and creates a GitHub Release with generated notes.
+The older `v1.0.0` tag already exists and contains a Windows-only release. Use `v1.1.0` for the first multiplatform release, provided that tag is still unused. For subsequent releases, substitute a new version; never reuse an existing tag. Pushing a `v*` tag runs the coordinated release workflow. It builds Windows, macOS Intel, and Linux x64, waits for all three, checks that the packages exist, and creates a GitHub Release with generated notes.
 
 Published files:
 - `qrzbuddy-windows.zip` — portable Windows x64 distribution
