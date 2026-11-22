@@ -36,7 +36,7 @@ jobs:
         shell: pwsh
         run: |
           python -m pip install --upgrade pip
-          python -m pip install "conan>=2,<3"
+          python -m pip install "conan>=2,<3" pillow pefile
           conan profile detect --force
 
       - name: Restore Conan package cache
@@ -56,7 +56,9 @@ jobs:
 
       - name: Build
         shell: pwsh
-        run: cmake --build build --parallel 2
+        run: |
+          cmake --build build --parallel 2
+          python -c "import pefile; p=pefile.PE(r'build/src/qrzbuddy.exe'); assert any(x.id == 14 for x in p.DIRECTORY_ENTRY_RESOURCE.entries), 'Missing RT_GROUP_ICON resource'"
 
       - name: Deploy Qt runtime and QML plugins
         shell: pwsh
