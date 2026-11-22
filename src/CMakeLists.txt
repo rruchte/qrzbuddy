@@ -101,7 +101,7 @@ if (WIN32)
     add_dependencies(qrzbuddy qrzbuddy_windows_icon)
 
     file(GENERATE OUTPUT "${WINDOWS_ICON_RC}"
-        CONTENT "IDI_ICON1 ICON \"${WINDOWS_ICON}\"\\n")
+        CONTENT "IDI_ICON1 ICON \"${WINDOWS_ICON}\"\n")
     set_source_files_properties("${WINDOWS_ICON_RC}"
         PROPERTIES OBJECT_DEPENDS "${WINDOWS_ICON}")
     target_sources(qrzbuddy PRIVATE "${WINDOWS_ICON_RC}")
