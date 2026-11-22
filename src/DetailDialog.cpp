@@ -1,6 +1,7 @@
 
 #include "DetailDialog.h"
 #include "Util.h"
+#include "SaveFile.h"
 #include "render/CallsignXMLRenderer.h"
 
 #include <QWebEngineSettings>
@@ -8,6 +9,7 @@
 #include <QHeaderView>
 #include <QFile>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QQuickItem>
 #include <QQuickView>
 #include <QQuickWidget>
@@ -32,7 +34,15 @@ DetailDialog::DetailDialog(QWidget *parent) : QMainWindow(parent)
 	connect(&downloadView, &QWebEngineView::loadFinished, this, [this, layout](){
 		downloadView.printToPdf([this](const QByteArray &bytes)
 								{
-									QFileDialog::saveFileContent(bytes, tr("%1.pdf").arg(this->callsign.getCall().c_str()));
+									if (bytes.isEmpty())
+                                    {
+                                        QMessageBox::warning(this, tr("Save failed"),
+                                                             tr("The PDF could not be generated."));
+                                        return;
+                                    }
+                                    qrz::saveFileWithDialog(this, bytes,
+                                                            tr("%1.pdf").arg(this->callsign.getCall().c_str()),
+                                                            tr("PDF files (*.pdf)"));
 								}, layout);
 	});
 
