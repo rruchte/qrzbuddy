@@ -32,6 +32,11 @@ jobs:
         with:
           arch: x64
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install Conan
         shell: pwsh
         run: |
@@ -52,12 +57,14 @@ jobs:
         run: |
           cmake -S . -B build -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
+            -DPython3_EXECUTABLE="$((Get-Command python).Source)" `
             -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="$env:GITHUB_WORKSPACE/conan_provider.cmake"
 
       - name: Build
         shell: pwsh
         run: |
           cmake --build build --parallel 2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -c "import pefile; p=pefile.PE(r'build/src/qrzbuddy.exe'); assert any(x.id == 14 for x in p.DIRECTORY_ENTRY_RESOURCE.entries), 'Missing RT_GROUP_ICON resource'"
 
       - name: Deploy Qt runtime and QML plugins
