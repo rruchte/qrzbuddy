@@ -30,6 +30,7 @@
 #include "render/CallsignMarkdownRenderer.h"
 #include "render/CallsignConsoleRenderer.h"
 #include "PrintHandler.h"
+#include "SaveFile.h"
 #include "MaidenheadUtils.h"
 
 using namespace Qt::StringLiterals;
@@ -183,7 +184,8 @@ void MainWindow::onActionSaveCsvTriggered()
 	CallsignCSVRenderer renderer = CallsignCSVRenderer();
 	std::string output = renderer.Render(tableModel.getCallsigns());
 
-	QFileDialog::saveFileContent(output.c_str(), "qrz_callsigns.csv");
+	qrz::saveFileWithDialog(this, QByteArray::fromStdString(output),
+                            QStringLiteral("qrz_callsigns.csv"), tr("CSV files (*.csv)"));
 }
 
 void MainWindow::onActionSaveXmlTriggered()
@@ -191,7 +193,8 @@ void MainWindow::onActionSaveXmlTriggered()
 	CallsignXMLRenderer renderer = CallsignXMLRenderer();
 	std::string output = renderer.Render(tableModel.getCallsigns());
 
-	QFileDialog::saveFileContent(output.c_str(), "qrz_callsigns.xml");
+	qrz::saveFileWithDialog(this, QByteArray::fromStdString(output),
+                            QStringLiteral("qrz_callsigns.xml"), tr("XML files (*.xml)"));
 }
 
 void MainWindow::onActionSaveJsonTriggered()
@@ -199,7 +202,8 @@ void MainWindow::onActionSaveJsonTriggered()
 	CallsignJSONRenderer renderer = CallsignJSONRenderer();
 	std::string output = renderer.Render(tableModel.getCallsigns());
 
-	QFileDialog::saveFileContent(output.c_str(), "qrz_callsigns.json");
+	qrz::saveFileWithDialog(this, QByteArray::fromStdString(output),
+                            QStringLiteral("qrz_callsigns.json"), tr("JSON files (*.json)"));
 }
 
 void MainWindow::onActionSaveMarkdownTriggered()
@@ -207,7 +211,8 @@ void MainWindow::onActionSaveMarkdownTriggered()
 	CallsignMarkdownRenderer renderer = CallsignMarkdownRenderer();
 	std::string output = renderer.Render(tableModel.getCallsigns());
 
-	QFileDialog::saveFileContent(output.c_str(), "qrz_callsigns.md");
+	qrz::saveFileWithDialog(this, QByteArray::fromStdString(output),
+                            QStringLiteral("qrz_callsigns.md"), tr("Markdown files (*.md)"));
 }
 
 bool MainWindow::collectCredentials()

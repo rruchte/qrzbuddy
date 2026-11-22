@@ -68,6 +68,8 @@ jobs:
           test -x build/src/qrzbuddy.app/Contents/MacOS/qrzbuddy
           test -d build/src/qrzbuddy.app/Contents/Frameworks
           test -d build/src/qrzbuddy.app/Contents/PlugIns
+          test -s build/src/qrzbuddy.app/Contents/Resources/qrzbuddy.icns
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' build/src/qrzbuddy.app/Contents/Info.plist | grep -Fx 'qrzbuddy.icns'
 
       - name: Create DMG
         run: |

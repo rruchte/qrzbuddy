@@ -77,6 +77,32 @@ add_executable(qrzbuddy
         js8call/DriftingDateTime.cpp
 )
 
+if (APPLE)
+    # macOS Dock/Finder icons come from the app bundle's .icns resource,
+    # not the runtime Qt window icon. Generate it from the shared PNG.
+    set(MACOS_ICON "${CMAKE_CURRENT_BINARY_DIR}/qrzbuddy.icns")
+    add_custom_command(
+        OUTPUT "${MACOS_ICON}"
+        COMMAND /bin/bash
+            "${CMAKE_CURRENT_SOURCE_DIR}/icons/Darwin/generate-icon.sh"
+            "${CMAKE_CURRENT_SOURCE_DIR}/icons/Unix/qrzbuddy_icon.png"
+            "${MACOS_ICON}"
+        DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/icons/Darwin/generate-icon.sh"
+            "${CMAKE_CURRENT_SOURCE_DIR}/icons/Unix/qrzbuddy_icon.png"
+        VERBATIM
+    )
+    set_source_files_properties("${MACOS_ICON}" PROPERTIES
+        GENERATED TRUE
+        MACOSX_PACKAGE_LOCATION "Resources"
+    )
+    target_sources(qrzbuddy PRIVATE "${MACOS_ICON}")
+    set_target_properties(qrzbuddy PROPERTIES
+        MACOSX_BUNDLE_ICON_FILE "qrzbuddy.icns"
+        MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.rruchte.QRZBuddy"
+    )
+endif()
+
 find_package(Qt6 REQUIRED COMPONENTS
         Core
         Gui
