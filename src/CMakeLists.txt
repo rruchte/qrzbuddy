@@ -115,17 +115,15 @@ install (TARGETS qrzbuddy
 )
 
 if (NOT WIN32 AND NOT APPLE)
-    # install a desktop file so js8call appears in the application start
-    # menu with an icon
-    install (
-            FILES qrzbuddy.desktop
-            DESTINATION /usr/share/applications
-            #COMPONENT runtime
+    # Match the desktop-file ID used by QGuiApplication on Linux.
+    install(
+            FILES io.github.rruchte.QRZBuddy.desktop
+            DESTINATION share/applications
     )
-    install (
+    install(
             FILES icons/Unix/qrzbuddy_icon.png
-            DESTINATION /usr/share/pixmapsbuddy
-            #COMPONENT runtime
+            DESTINATION share/icons/hicolor/1024x1024/apps
+            RENAME io.github.rruchte.QRZBuddy.png
     )
 
     IF("${CMAKE_INSTALL_PREFIX}" STREQUAL "/opt/qrzbuddy")
