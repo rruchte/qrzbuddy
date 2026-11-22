@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationVersion("1.0");
 	app.setWindowIcon(QIcon(":/icons/Unix/qrzbuddy_icon.png"));
 #ifdef Q_OS_LINUX
-	QGuiApplication::setDesktopFileName("qrzbuddy");
+	QGuiApplication::setDesktopFileName("io.github.rruchte.QRZBuddy");
 #endif
 
 	initializeOpenSSL();
