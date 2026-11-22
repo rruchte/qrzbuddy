@@ -20,7 +20,8 @@ Download the packages from [GitHub Releases](https://github.com/rruchte/qrzbuddy
 | Platform | Package | Installation |
 | --- | --- | --- |
 | **Windows x64** | `qrzbuddy-windows.zip` | Extract the ZIP to a folder, then run `qrzbuddy.exe`. Keep the other extracted files alongside the executable. |
-| **macOS Intel (x86_64)** | `qrzbuddy-macos-x64.dmg` | Open the DMG and copy `qrzbuddy.app` to Applications. This build is for Intel Macs; native Apple Silicon packaging is not yet available. |
+| **macOS Intel (x86_64)** | `qrzbuddy-macos-x64.dmg` | Open the DMG and copy `qrzbuddy.app` to Applications. For Intel Macs. |
+| **macOS Apple Silicon (arm64)** | `qrzbuddy-macos-arm64.dmg` | Open the DMG and copy `qrzbuddy.app` to Applications on an M-series Mac. |
 | **Linux x64** | `qrzbuddy-linux-x64.AppImage` | Make the AppImage executable and launch it. For an application-menu entry and reliable GNOME dock icon, integrate the AppImage with [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever). |
 
 To launch the Linux AppImage from a terminal:
@@ -32,7 +33,7 @@ chmod +x qrzbuddy-linux-x64.AppImage
 
 The AppImage is portable; Gear Lever integration is optional. The Linux package is built on Ubuntu 24.04 and may not run on distributions with older glibc versions.
 
-**macOS security note:** The macOS application is currently unsigned and unnotarized. Gatekeeper may warn or block its first launch. On a trusted download, use macOS **System Settings → Privacy & Security → Open Anyway** if that option is offered. See [Apple's guidance](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac).
+**macOS security note:** The macOS applications are currently unsigned and unnotarized. Gatekeeper may warn or block its first launch. On a trusted download, use macOS **System Settings → Privacy & Security → Open Anyway** if that option is offered. See [Apple's guidance](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac).
 
 ## Getting started
 
@@ -57,7 +58,7 @@ The application encrypts the stored QRZ.com password with AES-256 in its local c
 
 ## Release information and limitations
 
-Releases are built for **Windows x64**, **Intel macOS**, and **Linux x64**. There is no native Apple Silicon package yet; the macOS DMG is not signed or notarized. Interactive tests are performed manually; CI checks that the packages build and are assembled.
+Releases are built for **Windows x64**, **macOS Intel and Apple Silicon**, and **Linux x64**. Both macOS DMGs are unsigned and unnotarized. Interactive tests are performed manually; CI checks that the packages build and are assembled.
 
 For publishing instructions and build limitations, see [docs/releasing.md](docs/releasing.md). Release downloads include a `SHA256SUMS` file for verification.
 

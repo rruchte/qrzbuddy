@@ -1,6 +1,6 @@
 # Publishing QRZBuddy
 
-The three platform build workflows run for changes to `main` and can be invoked manually. Pull requests are validated by `.github/workflows/release.yml`, which runs all three builds and verifies the packages without publishing a release.
+The platform build workflows run for changes to `main` and can be invoked manually. Pull requests are validated by `.github/workflows/release.yml`, which runs all four builds and verifies the packages without publishing a release.
 
 ## Create a release
 
@@ -9,15 +9,16 @@ After the release changes have been merged into `main` and verified, choose a ne
 ```bash
 git switch main
 git pull --ff-only
-git tag -a v1.1.0 -m "QRZBuddy v1.1.0"
-git push origin v1.1.0
+git tag -a v1.1.1 -m "QRZBuddy v1.1.1"
+git push origin v1.1.1
 ```
 
-The older `v1.0.0` tag already exists and contains a Windows-only release. Use `v1.1.0` for the first multiplatform release, provided that tag is still unused. For subsequent releases, substitute a new version; never reuse an existing tag. Pushing a `v*` tag runs the coordinated release workflow. It builds Windows, macOS Intel, and Linux x64, waits for all three, checks that the packages exist, and creates a GitHub Release with generated notes.
+The `v1.0.0` and `v1.1.0` tags already exist. Select a new, unused version (for example `v1.1.1`) for the next release. For subsequent releases, substitute a new version; never reuse an existing tag. Pushing a `v*` tag runs the coordinated release workflow. It builds Windows, macOS Intel, macOS Apple Silicon, and Linux x64, waits for all four, checks that the packages exist, and creates a GitHub Release with generated notes.
 
 Published files:
 - `qrzbuddy-windows.zip` — portable Windows x64 distribution
-- `qrzbuddy-macos-x64.dmg` — Intel macOS application (currently unsigned and unnotarized)
+- `qrzbuddy-macos-x64.dmg` — Intel macOS application (unsigned and unnotarized)
+- `qrzbuddy-macos-arm64.dmg` — Apple Silicon macOS application (unsigned and unnotarized)
 - `qrzbuddy-linux-x64.AppImage` — Linux x64 AppImage (built on Ubuntu 24.04)
 - `SHA256SUMS` — SHA-256 digests of the packages
 
