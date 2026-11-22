@@ -77,6 +77,36 @@ add_executable(qrzbuddy
         js8call/DriftingDateTime.cpp
 )
 
+if (WIN32)
+    # Explorer and Windows shortcuts use an icon in the executable's PE
+    # resources, independently of QApplication::setWindowIcon().
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    enable_language(RC)
+
+    set(WINDOWS_ICON "${CMAKE_CURRENT_BINARY_DIR}/qrzbuddy.ico")
+    set(WINDOWS_ICON_RC "${CMAKE_CURRENT_BINARY_DIR}/qrzbuddy-icon.rc")
+
+    add_custom_command(
+        OUTPUT "${WINDOWS_ICON}"
+        COMMAND "${Python3_EXECUTABLE}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/icons/Windows/generate-icon.py"
+            "${CMAKE_CURRENT_SOURCE_DIR}/icons/Unix/qrzbuddy_icon.png"
+            "${WINDOWS_ICON}"
+        DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/icons/Windows/generate-icon.py"
+            "${CMAKE_CURRENT_SOURCE_DIR}/icons/Unix/qrzbuddy_icon.png"
+        VERBATIM
+    )
+    add_custom_target(qrzbuddy_windows_icon DEPENDS "${WINDOWS_ICON}")
+    add_dependencies(qrzbuddy qrzbuddy_windows_icon)
+
+    file(GENERATE OUTPUT "${WINDOWS_ICON_RC}"
+        CONTENT "IDI_ICON1 ICON \"${WINDOWS_ICON}\"\\n")
+    set_source_files_properties("${WINDOWS_ICON_RC}"
+        PROPERTIES OBJECT_DEPENDS "${WINDOWS_ICON}")
+    target_sources(qrzbuddy PRIVATE "${WINDOWS_ICON_RC}")
+endif()
+
 if (APPLE)
     # macOS Dock/Finder icons come from the app bundle's .icns resource,
     # not the runtime Qt window icon. Generate it from the shared PNG.
